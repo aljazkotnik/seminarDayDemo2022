@@ -2474,7 +2474,7 @@
   */
   // FROM AN ARRAY OF TASKS WITH TAGS TO A TREE
 
-  function array2tree(array) {
+  function array2tree(array, alltasks) {
     /*
     1.) Find groups.
     2.) Merge them.
@@ -2482,7 +2482,8 @@
     */
     // Find all created groups, and merge the ones with identical members.
     var groups = findAllTagBasedGroups(array);
-    var mergedgroups = mergeIdenticalGroups(groups); // Convert the groups into a higher level object to avoid circular references when figuring out ancestry.
+    var root = makeRootGroup(alltasks);
+    var mergedgroups = mergeIdenticalGroups(groups.concat(root)); // Convert the groups into a higher level object to avoid circular references when figuring out ancestry.
 
     var hierarchicalnodes = findParentalRelationships(mergedgroups);
     return hierarchicalnodes;
@@ -2567,10 +2568,8 @@
       dict[groupid].addtask(tag.taskId);
       dict[groupid].addtag(tag);
     }); // forEach
-    // A root group should be present. It will be merged with other existing groups if possible in hte next tep.
 
-    var root = makeRootGroup(array);
-    return groups.concat(root);
+    return groups;
   } // findAllTagBasedGroups
 
 
@@ -2730,6 +2729,7 @@
 
       var obj = this; // How should the temporary groups be differentiated from the actual ones? Inside the groups are differentiated by "<tag.name>-<tag.author>". So maybe check if the author is undefined, and if so mark it as a temporary group?
 
+      obj.alltasks = [];
       obj.temporary = [];
       obj.annotations = [];
       obj.collapsednodes = [];
@@ -2758,7 +2758,7 @@
           })); // concat
         }, []); // reduce
 
-        obj.nodes = array2tree(obj.annotations.concat(temporaryAnnotations)).map(function (group) {
+        obj.nodes = array2tree(obj.annotations.concat(temporaryAnnotations), obj.alltasks).map(function (group) {
           return new TreeNode(group);
         }); // map
       } // update
@@ -4404,6 +4404,7 @@
 
 
         obj.items.push(item);
+        obj.tree.hierarchy.alltasks.push(item.task); // Make the tree aware of this taskId also. Otherwise it'll hide it when navigating to root.
       } // additem
       // TABLETOP NAVIGATION
 
@@ -4473,6 +4474,7 @@
         // The METADATA COULD BE FILTERED INITIALLY TO REMOVE ANY NONINFORMATIVE VALUES?
         // Or just prevent non-informative values to be used for correlations - probably better.
         // UNSTEADY: let ordinals = ["stage_loading", "flow_coefficient", "eff_isen", "eff_poly", "alpha_rel_stator_in", "alpha_rel_stator_out", "alpha_rel_rotor_in", "alpha_rel_rotor_out", "alpha_stator_in", "alpha_stator_out", "alpha_rotor_in", "alpha_rotor_out", "eff_isen_lost_stator_in", "eff_isen_lost_stator_out", "eff_isen_lost_rotor_in", "eff_isen_lost_rotor_out"];
+        // STEADY let ordinals = ["Mass flow", "Pressure ratio", "Efficiency", "Stator loss", "Stator alpha", "Yp", "Yp_hub", "Yp_tip", "Yp_mid", "alpha_in", "alpha_in_hub", "alpha_in_mid", "alpha_in_tip", "alpha_out", "alpha_out_hub", "alpha_out_mid", "alpha_out_tip"]
 
         var ordinals = ["Mass flow", "Pressure ratio", "Efficiency", "Stator loss", "Stator alpha", "Yp", "Yp_hub", "Yp_tip", "Yp_mid", "alpha_in", "alpha_in_hub", "alpha_in_mid", "alpha_in_tip", "alpha_out", "alpha_out_hub", "alpha_out_mid", "alpha_out_tip"].map(function (variable) {
           return makeNamedArray(d.map(function (d_) {
@@ -4481,6 +4483,7 @@
         }); // map
         // ANY CATEGORICALS WITH ALL DIFFERENT VALUES SHOULD BE REMOVED!!
         // UNSTEADY let categoricals = []
+        // STEADY let categoricals = ["Lean", "Speed", "Separation", "Nstators", "Restagger"]
 
         var categoricals = ["Lean", "Speed", "Separation", "Nstators", "Restagger"].map(function (variable) {
           return makeNamedArray(d.map(function (d_) {
@@ -4589,7 +4592,10 @@
           obj.items.forEach(function (item) {
             g.members.includes(item) ? item.show() : item.hide();
           }); // forEach
-          // Just hide all groups.
+          // Return the viewnode to the current!
+
+          g._current.viewnode.appendChild(g._current.renderer.node); // Just hide all groups.
+
 
           obj.groups.forEach(function (g_) {
             return g_.hide();
@@ -4946,6 +4952,7 @@
           obj.nm.tree.addtagannotation(tag);
         }); // forEach
 
+        console.log("tags", d, tags);
         obj.nm.tree.update(); // CLICKING ON CHPTER LABELS COULD ALLOW CHAPTE MODIFICATIONS!!
         // The chapters need to be distributed to hte appropriate items.
 
@@ -6499,11 +6506,11 @@
 
   var subset = ["run_881", "run_877", "run_873", "run_795", "run_791", "run_787", "run_715", "run_711", "run_707", "run_703", "run_627", "run_631", "run_623", "run_577", "run_575", "run_573", "run_412", "run_410", "run_408", "run_310", "run_308", "run_306", "run_226", "run_224", "run_222"]; // First just import the metadata?
 
-  fetch("./data/metaData.json").then(function (res) {
+  fetch("./comp3row/metaData.json").then(function (res) {
     return res.json();
   }).then(function (mtdt) {
     var data = mtdt.data.filter(function (row) {
-      row.entropy2d = "./data/".concat(row.taskId, "_stator_loss_cont.json");
+      row.entropy2d = "./comp3row/".concat(row.taskId, "_stator_loss_cont.json");
       return subset.includes(row.taskId);
     }); // 
     // Items
