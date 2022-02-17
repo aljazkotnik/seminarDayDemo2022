@@ -1044,7 +1044,7 @@
     submitbutton: "\n    background-color: black;\n\tcolor: white;\n  "
   }; // css
 
-  var template$e = "\n<div style=\"300px\">\n  <input type=\"text\" placeholder=\"#tag-name\" style=\"width: 100px;\"></input>\n  \n  <div style=\"display: inline-block; float: right;\">\n    \n      <button class=\"starttime\" style=\"".concat(css$3.button, " ").concat(css$3.timebutton, "\">start</button>\n      <i>-</i>\n      <button class=\"endtime\" style=\"").concat(css$3.button, " ").concat(css$3.timebutton, "\">end</button>\n    \n      <button class=\"submit\" style=\"").concat(css$3.button, " ").concat(css$3.submitbutton, "\">Submit</button>\n  </div>\n  \n  \n</div>\n"); // template
+  var template$e = "\n<div style=\"width: 300px\">\n  <input type=\"text\" placeholder=\"#tag-name\" style=\"width: 100px;\"></input>\n  \n  <div style=\"display: inline-block; float: right;\">\n    \n      <button class=\"starttime\" style=\"".concat(css$3.button, " ").concat(css$3.timebutton, "\">start</button>\n      <i>-</i>\n      <button class=\"endtime\" style=\"").concat(css$3.button, " ").concat(css$3.timebutton, "\">end</button>\n    \n      <button class=\"submit\" style=\"").concat(css$3.button, " ").concat(css$3.submitbutton, "\">Submit</button>\n  </div>\n  \n  \n</div>\n"); // template
 
   var ChapterForm = /*#__PURE__*/function () {
     function ChapterForm() {
@@ -3252,7 +3252,7 @@
 
   var SpatialCorrelations = /*#__PURE__*/function () {
     // offset from axes origin point
-    function SpatialCorrelations(variables) {
+    function SpatialCorrelations() {
       _classCallCheck(this, SpatialCorrelations);
 
       this.xoffset = 300;
@@ -3906,7 +3906,26 @@
         obj.addmember(item);
       }); // map
 
-      obj.temporary = temporary;
+      obj.temporary = temporary; // Add in a Commenting system also.
+
+      var commentingnode = obj.node.querySelector("div.commenting");
+      commentingnode.style.clear = "both";
+      commentingnode.style.paddingTop = "5px"; // The group should also have a chapter form so that tags for several items can be submitted at once. But no chapters!!!
+
+      obj.tagform = new ChapterForm();
+      commentingnode.appendChild(obj.tagform.node); // Hide the time buttons.
+
+      obj.tagform.node.querySelector("button.starttime").style.display = "none";
+      obj.tagform.node.querySelector("i").style.display = "none";
+      obj.tagform.node.querySelector("button.endtime").style.display = "none"; // And now, when the button is clicked loop through the members and call their submit methods.
+
+      obj.tagform.submit = function (tag) {
+        obj.members.forEach(function (member) {
+          member.commenting.chapterform.submit(tag);
+        });
+      }; // submit
+
+
       return _this;
     } // constructor
 
@@ -4453,15 +4472,17 @@
         }), "y")]; // spatial
         // The METADATA COULD BE FILTERED INITIALLY TO REMOVE ANY NONINFORMATIVE VALUES?
         // Or just prevent non-informative values to be used for correlations - probably better.
+        // UNSTEADY: let ordinals = ["stage_loading", "flow_coefficient", "eff_isen", "eff_poly", "alpha_rel_stator_in", "alpha_rel_stator_out", "alpha_rel_rotor_in", "alpha_rel_rotor_out", "alpha_stator_in", "alpha_stator_out", "alpha_rotor_in", "alpha_rotor_out", "eff_isen_lost_stator_in", "eff_isen_lost_stator_out", "eff_isen_lost_rotor_in", "eff_isen_lost_rotor_out"];
 
-        var ordinals = ["sepal_length", "sepal_width"].map(function (variable) {
+        var ordinals = ["Mass flow", "Pressure ratio", "Efficiency", "Stator loss", "Stator alpha", "Yp", "Yp_hub", "Yp_tip", "Yp_mid", "alpha_in", "alpha_in_hub", "alpha_in_mid", "alpha_in_tip", "alpha_out", "alpha_out_hub", "alpha_out_mid", "alpha_out_tip"].map(function (variable) {
           return makeNamedArray(d.map(function (d_) {
             return d_.metadata[variable];
           }), variable);
         }); // map
         // ANY CATEGORICALS WITH ALL DIFFERENT VALUES SHOULD BE REMOVED!!
+        // UNSTEADY let categoricals = []
 
-        var categoricals = ["color", "cat"].map(function (variable) {
+        var categoricals = ["Lean", "Speed", "Separation", "Nstators", "Restagger"].map(function (variable) {
           return makeNamedArray(d.map(function (d_) {
             return d_.metadata[variable];
           }), variable);
@@ -6475,147 +6496,65 @@
 
   // author, datetime, tag, taskId, line, area, t
   // Maybe separate annotations for starttime and endtime? And then let the system figure out a close chapter.
-  // Call them run something
 
-  var data = [{
-    taskId: "run 15",
-    sepal_length: 5.1,
-    sepal_width: 3.5,
-    color: "salmon",
-    cat: "red",
-    entropy2d: "./data/run_15_stator_loss_cont.json"
-  }, {
-    taskId: "run 16",
-    sepal_length: 4.9,
-    sepal_width: 3,
-    color: "sandybrown",
-    cat: "brown",
-    entropy2d: "./data/run_16_stator_loss_cont.json"
-  }, {
-    taskId: "run 204",
-    sepal_length: 4.7,
-    sepal_width: 3.2,
-    color: "seagreen",
-    cat: "sea",
-    entropy2d: "./data/run_204_stator_loss_cont.json"
-  }, {
-    taskId: "run 205",
-    sepal_length: 4.6,
-    sepal_width: 3.1,
-    color: "seashell",
-    cat: "sea",
-    entropy2d: "./data/run_205_stator_loss_cont.json"
-  }, {
-    taskId: "run 238",
-    sepal_length: 5,
-    sepal_width: 3.6,
-    color: "sienna",
-    cat: "brown",
-    entropy2d: "./data/run_238_stator_loss_cont.json"
-  }, {
-    taskId: "run 239",
-    sepal_length: 5.4,
-    sepal_width: 3.9,
-    color: "skyblue",
-    cat: "sea",
-    entropy2d: "./data/run_239_stator_loss_cont.json"
-  }, {
-    taskId: "run 240",
-    sepal_length: 4.6,
-    sepal_width: 3.4,
-    color: "slateblue",
-    cat: "sea",
-    entropy2d: "./data/run_240_stator_loss_cont.json"
-  }, {
-    taskId: "run 241",
-    sepal_length: 5,
-    sepal_width: 3.4,
-    color: "springgreen",
-    cat: "sea",
-    entropy2d: "./data/run_241_stator_loss_cont.json"
-  }, {
-    taskId: "run 242",
-    sepal_length: 4.4,
-    sepal_width: 2.9,
-    color: "tan",
-    cat: "brown",
-    entropy2d: "./data/run_242_stator_loss_cont.json"
-  }, {
-    taskId: "run 279",
-    sepal_length: 4.9,
-    sepal_width: 3.1,
-    color: "thistle",
-    cat: "red",
-    entropy2d: "./data/run_279_stator_loss_cont.json"
-  }, {
-    taskId: "run 281",
-    sepal_length: 5.4,
-    sepal_width: 3.7,
-    color: "tomato",
-    cat: "red",
-    entropy2d: "./data/run_281_stator_loss_cont.json"
-  }, {
-    taskId: "run 283",
-    sepal_length: 4.8,
-    sepal_width: 3.4,
-    color: "turquoise",
-    cat: "sea",
-    entropy2d: "./data/run_283_stator_loss_cont.json"
-  }]; // data
+  var subset = ["run_881", "run_877", "run_873", "run_795", "run_791", "run_787", "run_715", "run_711", "run_707", "run_703", "run_627", "run_631", "run_623", "run_577", "run_575", "run_573", "run_412", "run_410", "run_408", "run_310", "run_308", "run_306", "run_226", "run_224", "run_222"]; // First just import the metadata?
 
-  /*
-  const data = [
-  {taskId: "task 0", sepal_length: 5.1, sepal_width: 3.5, color: "salmon", cat: "red", entropy2d: "./data/0000/unsteady_contour2d_meta.json"}
-  ]; // data
-  */
-  // Items
+  fetch("./data/metaData.json").then(function (res) {
+    return res.json();
+  }).then(function (mtdt) {
+    var data = mtdt.data.filter(function (row) {
+      row.entropy2d = "./data/".concat(row.taskId, "_stator_loss_cont.json");
+      return subset.includes(row.taskId);
+    }); // 
+    // Items
 
-  var workspace = new NavigationManager();
-  var renderer = new MeshRenderer2D(document.getElementById("canvas"));
-  var items = [];
+    var workspace = new NavigationManager();
+    var renderer = new MeshRenderer2D(document.getElementById("canvas"));
+    var items = [];
 
-  for (var i = 0; i < data.length; i++) {
-    var item = new SteadyIndividual(data[i], renderer.gl);
-    items.push(item); // Temporarilyturn the position: absolute off so we get an initial arrangement.
+    for (var i = 0; i < data.length; i++) {
+      var item = new SteadyIndividual(data[i], renderer.gl);
+      items.push(item); // Temporarilyturn the position: absolute off so we get an initial arrangement.
 
-    item.node.style.position = ""; // Make navigation manager keep track of the item.
+      item.node.style.position = ""; // Make navigation manager keep track of the item.
 
-    workspace.container.appendChild(item.node);
-    workspace.track(item); // Make the MeshRenderer draw it. The mesh renderer provides the gl object, which must be given to the items to initialise the players.
-    // Trackbatch? And connect it to the workspace hidden attribute??
+      workspace.container.appendChild(item.node);
+      workspace.track(item); // Make the MeshRenderer draw it. The mesh renderer provides the gl object, which must be given to the items to initialise the players.
+      // Trackbatch? And connect it to the workspace hidden attribute??
 
-    renderer.track(item);
-  } // for
-  // Update the minimap with all the items. This could be implemented in a nicer way it feels.
+      renderer.track(item);
+    } // for
+    // Update the minimap with all the items. This could be implemented in a nicer way it feels.
 
 
-  workspace.minimap.update(items); // The initial positioning is done based on "position: relative;"
+    workspace.minimap.update(items); // The initial positioning is done based on "position: relative;"
 
-  var headeroffset = 80;
-  var positions = items.reduce(function (acc, item) {
-    acc.push([item.node.offsetLeft, item.node.offsetTop + headeroffset]);
-    return acc;
-  }, []); // Now positionthem absolutely, and add the dragging.
+    var headeroffset = 80;
+    var positions = items.reduce(function (acc, item) {
+      acc.push([item.node.offsetLeft, item.node.offsetTop + headeroffset]);
+      return acc;
+    }, []); // Now positionthem absolutely, and add the dragging.
 
-  items.forEach(function (item, i) {
-    item.node.style.position = "absolute";
-    item.position = positions[i];
-  }); // forEach
-  // The knowledge manager object.
+    items.forEach(function (item, i) {
+      item.node.style.position = "absolute";
+      item.position = positions[i];
+    }); // forEach
+    // The knowledge manager object.
 
-  var knowledge = new KnowledgeManager(workspace); // Start with the rendering. Rendering only considers drawing the items it knows about, and it knows nothing of the dynamically created groups by the NavigationManager. As a kludge solution the NavigationManager will superst the items to be considered by the renderer.
-  // How should the renderer recognise that it needs to change the set of groups to iterate over?
+    var knowledge = new KnowledgeManager(workspace); // Start with the rendering. Rendering only considers drawing the items it knows about, and it knows nothing of the dynamically created groups by the NavigationManager. As a kludge solution the NavigationManager will superst the items to be considered by the renderer.
+    // How should the renderer recognise that it needs to change the set of groups to iterate over?
 
-  renderer.draw(); // To change the colormap values a custom range can be specified:
-  // renderer.customColormapRange = [1140, 1150]
+    renderer.draw(); // To change the colormap values a custom range can be specified:
+    // renderer.customColormapRange = [1140, 1150]
 
-  workspace.updateRenderingItems = function (items) {
-    renderer.items = items;
-  }; // updateRenderingItems
-  // How to do the memory handling. And how to make it appear in the navigation bar!
+    workspace.updateRenderingItems = function (items) {
+      renderer.items = items;
+    }; // updateRenderingItems
+    // How to do the memory handling. And how to make it appear in the navigation bar!
 
 
-  console.log(workspace, renderer, knowledge);
+    console.log(workspace, renderer, knowledge);
+  });
 
 }());
 //# sourceMappingURL=spatialknowledge.js.map
