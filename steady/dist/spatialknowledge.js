@@ -6483,84 +6483,84 @@
     sepal_width: 3.5,
     color: "salmon",
     cat: "red",
-    entropy2d: "./comp3row/run_15_stator_loss_cont.json"
+    entropy2d: "./data/run_15_stator_loss_cont.json"
   }, {
     taskId: "run 16",
     sepal_length: 4.9,
     sepal_width: 3,
     color: "sandybrown",
     cat: "brown",
-    entropy2d: "./comp3row/run_16_stator_loss_cont.json"
+    entropy2d: "./data/run_16_stator_loss_cont.json"
   }, {
     taskId: "run 204",
     sepal_length: 4.7,
     sepal_width: 3.2,
     color: "seagreen",
     cat: "sea",
-    entropy2d: "./comp3row/run_204_stator_loss_cont.json"
+    entropy2d: "./data/run_204_stator_loss_cont.json"
   }, {
     taskId: "run 205",
     sepal_length: 4.6,
     sepal_width: 3.1,
     color: "seashell",
     cat: "sea",
-    entropy2d: "./comp3row/run_205_stator_loss_cont.json"
+    entropy2d: "./data/run_205_stator_loss_cont.json"
   }, {
     taskId: "run 238",
     sepal_length: 5,
     sepal_width: 3.6,
     color: "sienna",
     cat: "brown",
-    entropy2d: "./comp3row/run_238_stator_loss_cont.json"
+    entropy2d: "./data/run_238_stator_loss_cont.json"
   }, {
     taskId: "run 239",
     sepal_length: 5.4,
     sepal_width: 3.9,
     color: "skyblue",
     cat: "sea",
-    entropy2d: "./comp3row/run_239_stator_loss_cont.json"
+    entropy2d: "./data/run_239_stator_loss_cont.json"
   }, {
     taskId: "run 240",
     sepal_length: 4.6,
     sepal_width: 3.4,
     color: "slateblue",
     cat: "sea",
-    entropy2d: "./comp3row/run_240_stator_loss_cont.json"
+    entropy2d: "./data/run_240_stator_loss_cont.json"
   }, {
     taskId: "run 241",
     sepal_length: 5,
     sepal_width: 3.4,
     color: "springgreen",
     cat: "sea",
-    entropy2d: "./comp3row/run_241_stator_loss_cont.json"
+    entropy2d: "./data/run_241_stator_loss_cont.json"
   }, {
     taskId: "run 242",
     sepal_length: 4.4,
     sepal_width: 2.9,
     color: "tan",
     cat: "brown",
-    entropy2d: "./comp3row/run_242_stator_loss_cont.json"
+    entropy2d: "./data/run_242_stator_loss_cont.json"
   }, {
     taskId: "run 279",
     sepal_length: 4.9,
     sepal_width: 3.1,
     color: "thistle",
     cat: "red",
-    entropy2d: "./comp3row/run_279_stator_loss_cont.json"
+    entropy2d: "./data/run_279_stator_loss_cont.json"
   }, {
     taskId: "run 281",
     sepal_length: 5.4,
     sepal_width: 3.7,
     color: "tomato",
     cat: "red",
-    entropy2d: "./comp3row/run_281_stator_loss_cont.json"
+    entropy2d: "./data/run_281_stator_loss_cont.json"
   }, {
     taskId: "run 283",
     sepal_length: 4.8,
     sepal_width: 3.4,
     color: "turquoise",
     cat: "sea",
-    entropy2d: "./comp3row/run_283_stator_loss_cont.json"
+    entropy2d: "./data/run_283_stator_loss_cont.json"
   }]; // data
 
   /*
