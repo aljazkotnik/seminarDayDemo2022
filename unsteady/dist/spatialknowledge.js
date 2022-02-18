@@ -2276,11 +2276,15 @@
       key: "updateCommentCounter",
       value: function updateCommentCounter() {
         var obj = this;
-        var n = obj.comments.reduce(function (acc, c) {
-          acc += 1;
-          acc += c.replies.length;
-          return acc;
-        }, 0);
+        /*
+        let n = obj.comments.reduce((acc,c)=>{
+        	acc += 1
+        	acc += c.replies.length;
+        	return acc
+        },0)
+        */
+
+        var n = obj.comments.length;
         var counterNode = obj.node.querySelector("div.hideShowText").querySelector("b.counter");
         counterNode.innerText = n ? "(".concat(n, ")") : "";
       } // updateCommentCounter
@@ -2313,6 +2317,9 @@
           var container = obj.node.querySelector("div.comments");
           container.insertBefore(c.node, container.firstChild);
         }); // forEach	
+        // Update the comment section header:
+
+        obj.updateCommentCounter();
       } // add
       // The user may be needed here as the upvotes/downvotes need to be colored.
 
@@ -5104,28 +5111,20 @@
         }), "y")]; // spatial
         // The METADATA COULD BE FILTERED INITIALLY TO REMOVE ANY NONINFORMATIVE VALUES?
         // Or just prevent non-informative values to be used for correlations - probably better.
-        // UNSTEADY: let ordinals = ["stage_loading", "flow_coefficient", "eff_isen", "eff_poly", "alpha_rel_stator_in", "alpha_rel_stator_out", "alpha_rel_rotor_in", "alpha_rel_rotor_out", "alpha_stator_in", "alpha_stator_out", "alpha_rotor_in", "alpha_rotor_out", "eff_isen_lost_stator_in", "eff_isen_lost_stator_out", "eff_isen_lost_rotor_in", "eff_isen_lost_rotor_out"];
-        // STEADY let ordinals = ["Mass flow", "Pressure ratio", "Efficiency", "Stator loss", "Stator alpha", "Yp", "Yp_hub", "Yp_tip", "Yp_mid", "alpha_in", "alpha_in_hub", "alpha_in_mid", "alpha_in_tip", "alpha_out", "alpha_out_hub", "alpha_out_mid", "alpha_out_tip"]
-
-        var ordinals = ["stage_loading", "flow_coefficient", "eff_isen", "eff_poly", "alpha_rel_stator_in", "alpha_rel_stator_out", "alpha_rel_rotor_in", "alpha_rel_rotor_out", "alpha_stator_in", "alpha_stator_out", "alpha_rotor_in", "alpha_rotor_out", "eff_isen_lost_stator_in", "eff_isen_lost_stator_out", "eff_isen_lost_rotor_in", "eff_isen_lost_rotor_out"].map(function (variable) {
-          return makeNamedArray(d.map(function (d_) {
-            return d_.metadata[variable];
-          }), variable);
-        }); // map
-        // ANY CATEGORICALS WITH ALL DIFFERENT VALUES SHOULD BE REMOVED!!
-        // UNSTEADY let categoricals = []
-        // STEADY let categoricals = ["Lean", "Speed", "Separation", "Nstators", "Restagger"]
-
-        var categoricals = [].map(function (variable) {
-          return makeNamedArray(d.map(function (d_) {
-            return d_.metadata[variable];
-          }), variable);
-        }); // map
 
         return {
           spatial: spatial,
-          ordinals: ordinals,
-          categoricals: categoricals
+          ordinals: obj.ordinals.map(function (variable) {
+            return makeNamedArray(d.map(function (d_) {
+              return d_.metadata[variable];
+            }), variable);
+          }),
+          categoricals: obj.categoricals.map(function (variable) {
+            return makeNamedArray(d.map(function (d_) {
+              return d_.metadata[variable];
+            }), variable);
+          }) // map
+
         };
       } // collectSpatialCorrelationData
 
@@ -7149,9 +7148,13 @@
     });
   }); // map
 
+  var ordinals = ["stage_loading", "flow_coefficient", "eff_isen", "eff_poly", "alpha_rel_stator_in", "alpha_rel_stator_out", "alpha_rel_rotor_in", "alpha_rel_rotor_out", "alpha_stator_in", "alpha_stator_out", "alpha_rotor_in", "alpha_rotor_out", "eff_isen_lost_stator_in", "eff_isen_lost_stator_out", "eff_isen_lost_rotor_in", "eff_isen_lost_rotor_out"];
+  var categoricals = [];
   Promise.all(mtdtprmss).then(function (data) {
     // Items
     var workspace = new NavigationManager();
+    workspace.ordinals = ordinals;
+    workspace.categoricals = categoricals;
     var renderer = new MeshRenderer2D(document.getElementById("canvas"));
     var items = [];
 
