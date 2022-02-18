@@ -6507,11 +6507,11 @@
   var ordinals = ["Mass flow", "Pressure ratio", "Efficiency", "Stator loss", "Stator alpha", "Yp", "Yp_hub", "Yp_tip", "Yp_mid", "alpha_in", "alpha_in_hub", "alpha_in_mid", "alpha_in_tip", "alpha_out", "alpha_out_hub", "alpha_out_mid", "alpha_out_tip"];
   var categoricals = ["Lean", "Speed", "Separation", "Nstators", "Restagger"]; // First just import the metadata?
 
-  fetch("./comp3row/metaData.json").then(function (res) {
+  fetch("./data/metaData.json").then(function (res) {
     return res.json();
   }).then(function (mtdt) {
     var data = mtdt.data.filter(function (row) {
-      row.entropy2d = "./comp3row/".concat(row.taskId, "_stator_loss_cont.json");
+      row.entropy2d = "./data/".concat(row.taskId, "_stator_loss_cont.json");
       return subset.includes(row.taskId);
     }); // 
     // Items
